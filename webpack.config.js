@@ -1,6 +1,7 @@
 var path = require('path');
 var webpack = require("webpack");
 var HtmlwebpackPlugin = require('html-webpack-plugin');
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
 //定义了一些文件夹的路径
 var ROOT_PATH = path.resolve(__dirname);
 var APP_PATH = path.resolve(ROOT_PATH, 'app');
@@ -20,6 +21,7 @@ module.exports = {
   },
   //添加我们的插件 会自动生成一个html文件
   plugins: [
+    new ExtractTextPlugin('style.css', { allChunks: true }),
     //这个使用uglifyJs压缩你的js代码
     new webpack.optimize.UglifyJsPlugin({
       minimize: true
@@ -36,6 +38,7 @@ module.exports = {
       title: 'Hello World app index',
       template: path.resolve(TEM_PATH, 'index.ejs'),
       filename: 'index.html',
+      favicon: 'img/1234.png',
       //chunks这个参数告诉插件要引用entry里面的哪几个入口
       chunks: ['app'],
       //要把script插入到标签里
@@ -71,7 +74,7 @@ module.exports = {
     loaders: [
       {
         test: /\.less$/,
-        loaders: ['style', 'css' , 'less'],
+        loader: ExtractTextPlugin.extract('style', 'css!less'),
         include: APP_PATH
       },
       {
